@@ -56,8 +56,6 @@
 
 ![](https://youke1.picui.cn/s1/2025/11/13/6914baff164c8.jpg)
 
-![](https://youke1.picui.cn/s1/2025/11/13/6914bb02eb396.jpg)
-
 ![](https://youke1.picui.cn/s1/2025/11/13/6914bb04708db.jpg)
 
 ![](https://youke1.picui.cn/s1/2025/11/13/6914bb07af7a7.jpg)
