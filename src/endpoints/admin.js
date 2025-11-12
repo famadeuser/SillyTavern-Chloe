@@ -10,8 +10,8 @@ import { sync as writeFileAtomicSync } from 'write-file-atomic';
 import { getUserDirectories, toKey, getPasswordHash } from '../users.js';
 
 const ADMIN_CREDENTIALS = {
-    username: 'verel',
-    password: 'lu6326158',
+    username: 'admin',
+    password: '123456',
 };
 
 const ACCOUNT_PREFIX = 'account:';
