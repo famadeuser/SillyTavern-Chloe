@@ -30,56 +30,39 @@
 
 ## 🖼️ 界面一览
 
-### OAuth 登录页面
-![OAuth登录页面](https://youke1.picui.cn/s1/2025/11/13/6914bae697ddf.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914bae697ddf.jpg)
 
-### 用户主页 - 仪表盘
-![用户主页](https://youke1.picui.cn/s1/2025/11/13/6914bae709c2f.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914bae709c2f.jpg)
 
-### 签到功能
-![签到功能](https://youke1.picui.cn/s1/2025/11/13/6914bae9a8473.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914bae9a8473.jpg)
 
-### 兑换码使用
-![兑换码](https://youke1.picui.cn/s1/2025/11/13/6914baeaa50a6.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914baeaa50a6.jpg)
 
-### 使用说明
-![使用说明](https://youke1.picui.cn/s1/2025/11/13/6914baec59638.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914baec59638.jpg)
 
-### 管理员后台 - 登录
-![管理员登录](https://youke1.picui.cn/s1/2025/11/13/6914baef3430a.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914baef3430a.jpg)
 
-### 管理员后台 - 仪表盘
-![管理员仪表盘](https://youke1.picui.cn/s1/2025/11/13/6914baf1b669b.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914baf1b669b.jpg)
 
-### 用户管理
-![用户管理](https://youke1.picui.cn/s1/2025/11/13/6914baf61298a.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914baf61298a.jpg)
 
-### 兑换码管理
-![兑换码管理](https://youke1.picui.cn/s1/2025/11/13/6914baf7cd36b.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914baf7cd36b.jpg)
 
-### 系统设置
-![系统设置](https://youke1.picui.cn/s1/2025/11/13/6914baf9b3a4f.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914baf9b3a4f.jpg)
 
-### 聊天界面 - 主界面
-![聊天主界面](https://youke1.picui.cn/s1/2025/11/13/6914bafc66619.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914bafc66619.jpg)
 
-### 角色选择
-![角色选择](https://youke1.picui.cn/s1/2025/11/13/6914bafdb5beb.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914bafdb5beb.jpg)
 
-### 对话示例 1
-![对话示例1](https://youke1.picui.cn/s1/2025/11/13/6914baff164c8.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914baff164c8.jpg)
 
-### 对话示例 2
-![对话示例2](https://youke1.picui.cn/s1/2025/11/13/6914bb02eb396.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914bb02eb396.jpg)
 
-### 设置面板
-![设置面板](https://youke1.picui.cn/s1/2025/11/13/6914bb04708db.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914bb04708db.jpg)
 
-### 角色卡片编辑
-![角色编辑](https://youke1.picui.cn/s1/2025/11/13/6914bb07af7a7.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914bb07af7a7.jpg)
 
-### 世界书设置
-![世界书](https://youke1.picui.cn/s1/2025/11/13/6914bb0958858.jpg)
+![](https://youke1.picui.cn/s1/2025/11/13/6914bb0958858.jpg)
 
 ## 📋 系统要求
 
