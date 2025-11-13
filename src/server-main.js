@@ -15,6 +15,7 @@ import responseTime from 'response-time';
 import { router as oauthRouter } from './oauth.js';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
+import storage from 'node-persist';
 
 // local library imports
 import './fetch-patch.js';
