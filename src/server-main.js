@@ -113,6 +113,19 @@ const CORS = cors({
 
 app.use(CORS);
 
+// Public stats API (before authentication middleware)
+app.get('/api/users/stats', async (_req, res) => {
+    try {
+        const keys = await storage.keys();
+        const userKeys = keys.filter(key => key.startsWith('user:'));
+        const userCount = userKeys.length;
+        return res.json({ userCount, timestamp: Date.now() });
+    } catch (error) {
+        console.error('Get stats error:', error);
+        return res.status(500).json({ error: '获取统计信息失败' });
+    }
+});
+
 if (cliArgs.listen && cliArgs.basicAuthMode) {
     app.use(basicAuthMiddleware);
 }
