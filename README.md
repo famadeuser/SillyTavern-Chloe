@@ -4,29 +4,72 @@
 
 ## ✨ 新增功能
 
-### 🔐 OAuth 登录系统
-- 支持 Discord OAuth 登录
-- 支持 LinuxDo OAuth 登录
-- 安全的状态验证和会话管理
-- 自动创建用户账户
+### 🔐 身份验证系统
+- **OAuth 登录**
+  - 支持 Discord OAuth 登录
+  - 支持 LinuxDo OAuth 登录
+  - OAuth 登录支持邀请码（注册关闭时仍可通过邀请码注册）
+  - 安全的状态验证和会话管理
+  - 自动创建用户账户
+
+- **账号密码登录**
+  - 统一像素风格的登录界面（`/login.html`）
+  - 密码安全验证
+  - 用户密码修改功能
+  - 登录失败保护
 
 ### 👥 用户账户系统
 - 多用户支持，每个用户独立的数据存储
 - 用户积分系统
-- 签到功能
-- 兑换码系统
+- 每日签到功能
+- 兑换码系统（积分充值）
 
-### 🎨 用户界面增强
-- 现代化的登录页面（`/oauth.html`）
-- 用户主页界面（`/home.html`）
-- 管理员控制面板（`/admin.html`）
-- 像素风格设计
+### 🎟️ 邀请码注册系统
+- **邀请码注册**（`/register.html`）
+  - 支持过期时间设置（1-365天或永久有效）
+  - 邀请码注册不受"关闭注册"开关限制
+  - 用户名黑名单验证
+  - 强密码要求
+
+- **OAuth + 邀请码**
+  - 在 OAuth 登录页面输入邀请码
+  - 关闭注册时，持有效邀请码用户仍可通过 OAuth 注册
+
+### 🎨 用户界面
+- **统一像素艺术风格**
+  - OAuth 登录页（`/oauth.html`）
+  - 账号密码登录页（`/login.html`）
+  - 邀请码注册页（`/register.html`）
+  - 用户主页（`/home.html`）
+  - 管理员控制面板（`/admin.html`）
+
+- **动画效果**
+  - 粒子系统背景
+  - 平滑过渡动画
+  - 交互反馈效果
+  - 响应式设计，支持移动端
 
 ### ⚙️ 管理功能
-- 用户管理（查看、删除、重置密码）
-- 兑换码管理（生成、查看使用情况）
-- 注册开关控制
-- 系统统计信息
+- **用户管理**
+  - 查看所有用户
+  - 删除用户
+  - 重置用户密码
+  - 查看用户积分
+
+- **邀请码管理**
+  - 批量生成邀请码（最多100个）
+  - 设置过期时间（1-365天）
+  - 查看使用状态（未使用/已使用/已过期）
+  - 查看使用者信息
+
+- **兑换码管理**
+  - 生成兑换码
+  - 设置积分面额
+  - 查看使用情况
+
+- **系统设置**
+  - 注册开关控制
+  - 系统统计信息
 
 ## 🖼️ 界面一览
 
@@ -78,6 +121,8 @@ npm install
 
 ### 2. 配置
 
+#### 2.1 配置文件
+
 复制 `default/config.yaml` 到项目根目录的 `config.yaml`，并根据需要修改配置：
 
 ```yaml
@@ -95,10 +140,36 @@ oauth:
     clientSecret: 'YOUR_LINUXDO_CLIENT_SECRET'
 ```
 
+#### 2.2 环境变量（管理员账号）
+
+设置管理员凭据（**必需**）：
+
+```bash
+# Linux/macOS
+export ADMIN_USERNAME="your_admin_username"
+export ADMIN_PASSWORD="your_secure_password"
+
+# 或在启动时指定
+ADMIN_USERNAME="admin" ADMIN_PASSWORD="secure123" node server.js
+```
+
+```powershell
+# Windows PowerShell
+$env:ADMIN_USERNAME="your_admin_username"
+$env:ADMIN_PASSWORD="your_secure_password"
+```
+
+或创建 `.env` 文件（需要安装 `dotenv`）：
+```env
+ADMIN_USERNAME=your_admin_username
+ADMIN_PASSWORD=your_secure_password
+```
+
 **⚠️ 重要安全提示：**
-- 请修改 `src/endpoints/admin.js` 中的管理员凭据
-- 不要将包含敏感信息的 `config.yaml` 提交到版本控制
-- 使用强密码和安全的密钥
+- ✅ 管理员凭据通过环境变量配置，不再硬编码
+- ✅ 不要将包含敏感信息的 `config.yaml` 或 `.env` 提交到版本控制
+- ✅ 使用强密码和安全的密钥
+- ✅ 生产环境建议使用密钥管理服务（如 AWS Secrets Manager、HashiCorp Vault）
 
 ### 3. 启动服务
 
@@ -128,16 +199,27 @@ npm start
 ```
 .
 ├── src/
-│   ├── oauth.js              # OAuth 登录逻辑
+│   ├── oauth.js              # OAuth 登录逻辑（支持邀请码）
 │   ├── endpoints/
-│   │   ├── admin.js          # 管理员接口
-│   │   └── account.js        # 用户账户接口
+│   │   ├── admin.js          # 管理员接口（邀请码/兑换码管理）
+│   │   ├── account.js        # 用户账户接口（密码修改）
+│   │   └── users-public.js   # 公开用户接口（注册/登录）
 │   └── ...
 ├── public/
+│   ├── oauth.html            # OAuth 登录页（支持邀请码输入）
+│   ├── login.html            # 账号密码登录页
+│   ├── register.html         # 邀请码注册页
 │   ├── home.html             # 用户主页
-│   ├── oauth.html            # OAuth 登录页
-│   ├── admin.html            # 管理面板
-│   └── ...
+│   ├── admin.html            # 管理员控制面板
+│   ├── scripts/
+│   │   ├── oauth-login.js    # OAuth 页面逻辑
+│   │   ├── password-login.js # 密码登录逻辑
+│   │   ├── register.js       # 注册页逻辑
+│   │   ├── home.js           # 用户主页逻辑
+│   │   └── admin.js          # 管理后台逻辑
+│   └── css/
+│       ├── oauth.css         # 统一像素风格样式
+│       └── home.css          # 用户主页样式
 ├── ops/
 │   └── Caddyfile             # Caddy 反向代理配置
 └── default/
@@ -165,26 +247,112 @@ docker compose -f docker/docker-compose.yml up -d
 
 ## 📚 API 端点
 
+### 认证端点
+- `GET /auth/discord` - 发起 Discord OAuth 登录（支持 `?invite=CODE` 参数）
+- `GET /auth/linuxdo` - 发起 LinuxDo OAuth 登录（支持 `?invite=CODE` 参数）
+- `GET /oauth` - OAuth 回调处理
+- `POST /api/users/login` - 账号密码登录
+- `POST /api/users/register` - 邀请码注册
+
 ### 用户端点
 - `GET /api/account/info` - 获取账户信息
-- `POST /api/account/checkin` - 签到
+- `POST /api/account/checkin` - 每日签到
 - `POST /api/account/redeem` - 使用兑换码
+- `POST /api/account/change-password` - 修改密码
 
 ### 管理员端点
-- `GET /api/admin/users` - 获取用户列表
-- `POST /api/admin/redeem-codes` - 生成兑换码
-- `POST /api/admin/toggle-registration` - 切换注册开关
 
-### OAuth 端点
-- `GET /login/:provider` - 发起 OAuth 登录
-- `GET /oauth` - OAuth 回调处理
+#### 用户管理
+- `GET /api/admin/users` - 获取用户列表
+- `POST /api/admin/users/delete` - 删除用户
+- `POST /api/admin/users/reset-password` - 重置用户密码
+
+#### 邀请码管理
+- `POST /api/admin/invite-codes` - 批量生成邀请码
+  - 参数：`count`（数量）、`expiresInDays`（过期天数，可选）
+- `GET /api/admin/invite-codes` - 获取邀请码列表
+- `DELETE /api/admin/invite-codes/:code` - 删除邀请码
+
+#### 兑换码管理
+- `POST /api/admin/redeem-codes` - 生成兑换码
+- `GET /api/admin/redeem-codes` - 获取兑换码列表
+
+#### 系统设置
+- `POST /api/admin/toggle-registration` - 切换注册开关
+- `GET /api/admin/system-config` - 获取系统配置
+- `GET /api/admin/stats` - 获取系统统计信息
 
 ## 🔒 安全性
 
-1. **管理员凭据**：修改 `src/endpoints/admin.js` 中的硬编码凭据
-2. **CSRF 保护**：生产环境务必保持启用
-3. **SSL/TLS**：生产环境建议启用 HTTPS
-4. **密钥管理**：使用环境变量或密钥管理服务存储敏感信息
+### 已实施的安全措施
+
+1. **管理员凭据保护**
+   - ✅ 管理员账号密码通过环境变量配置
+   - ✅ 不在代码中硬编码敏感信息
+   - ✅ 默认凭据需要在生产环境中修改
+
+2. **密码安全**
+   - ✅ 使用 scrypt 进行密码哈希
+   - ✅ 每个用户独立的盐值
+   - ✅ 密码长度要求（6-128位）
+   - ✅ 密码修改需验证当前密码
+
+3. **会话安全**
+   - ✅ CSRF Token 保护
+   - ✅ 安全的会话管理
+   - ✅ OAuth 状态验证
+
+4. **邀请码安全**
+   - ✅ 邀请码单次使用
+   - ✅ 支持过期时间设置
+   - ✅ 安全的随机码生成
+
+5. **输入验证**
+   - ✅ 用户名黑名单过滤
+   - ✅ 用户名格式验证
+   - ✅ 密码强度要求
+   - ✅ SQL注入防护
+
+### 生产环境建议
+
+1. **SSL/TLS**：务必启用 HTTPS
+2. **密钥管理**：使用密钥管理服务（AWS Secrets Manager、HashiCorp Vault等）
+3. **日志审计**：启用访问日志和操作日志
+4. **备份策略**：定期备份用户数据和配置
+5. **防火墙**：限制管理接口访问
+6. **更新维护**：及时更新依赖包
+
+## 📝 更新日志
+
+### v1.1.0 (最新)
+
+**新增功能**
+- ✨ 邀请码系统支持过期时间设置
+- ✨ OAuth 登录支持邀请码注册
+- ✨ 新增统一风格的账号密码登录页面
+- ✨ 新增统一风格的邀请码注册页面
+- ✨ 用户密码修改功能
+- ✨ 用户名黑名单验证
+
+**安全改进**
+- 🔒 管理员凭据改为环境变量配置
+- 🔒 移除硬编码的敏感信息
+- 🔒 增强密码安全策略
+
+**界面优化**
+- 🎨 统一像素艺术风格设计
+- 🎨 添加动画效果和粒子系统
+- 🎨 改进表单验证和错误提示
+- 🎨 支持移动端滚动浏览
+
+### v1.0.0
+
+**初始版本**
+- 🎉 OAuth 登录系统（Discord、LinuxDo）
+- 🎉 多用户账户系统
+- 🎉 积分系统和签到功能
+- 🎉 兑换码系统
+- 🎉 管理员控制面板
 
 ## 📖 文档
 
