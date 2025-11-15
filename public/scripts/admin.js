@@ -400,8 +400,11 @@ async function loadUsers() {
                             <button class="pixel-button action-btn-small" data-action="ban" data-handle="${escapeHtml(user.handle)}">
                                 <span class="button-content"><span class="button-text">${user.enabled ? '封禁' : '解封'}</span></span>
                             </button>
-                            <button class="pixel-button action-btn-small danger" data-action="delete" data-handle="${escapeHtml(user.handle)}">
+                            <button class="pixel-button action-btn-small danger" data-action="delete-data" data-handle="${escapeHtml(user.handle)}">
                                 <span class="button-content"><span class="button-text">删除数据</span></span>
+                            </button>
+                            <button class="pixel-button action-btn-small danger" data-action="delete-account" data-handle="${escapeHtml(user.handle)}">
+                                <span class="button-content"><span class="button-text">删除账户</span></span>
                             </button>
                         </div>
                     </div>
@@ -445,13 +448,26 @@ async function handleUserAction(event) {
         if (confirmed) {
             await toggleUserBan(handle);
         }
-    } else if (action === 'delete') {
+    } else if (action === 'delete-data') {
         const confirmed = await showConfirmDialog(
-            '确认删除',
-            `确定要删除用户 ${handle} 的所有数据吗？此操作不可恢复！`
+            '确认删除数据',
+            `确定要删除用户 ${handle} 的所有数据吗？此操作不可恢复！账户将保留，但数据会被清空。`
         );
         if (confirmed) {
             await deleteUserData(handle);
+        }
+    } else if (action === 'delete-account') {
+        const confirmed = await showConfirmDialog(
+            '确认删除账户',
+            `确定要完全删除用户 ${handle} 的账户吗？此操作不可恢复！`
+        );
+        if (confirmed) {
+            // 询问是否同时删除数据
+            const purgeData = await showConfirmDialog(
+                '删除用户数据',
+                '是否同时删除该用户的所有数据文件？'
+            );
+            await deleteUserAccount(handle, purgeData);
         }
     }
 }
@@ -486,6 +502,94 @@ async function deleteUserData(handle) {
         await loadDashboard();
     } catch (error) {
         showToast('error', '删除失败', error.error || '删除用户数据失败');
+    }
+}
+
+async function deleteUserAccount(handle, purgeData) {
+    try {
+        const url = `/api/admin/users/${handle}${purgeData ? '?purgeData=true' : ''}`;
+        const token = await getCsrfToken();
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (token && token !== 'disabled') {
+            headers['X-CSRF-Token'] = token;
+        }
+
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: headers,
+        });
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({ error: response.statusText }));
+            throw error;
+        }
+
+        const result = await response.json();
+        showToast('success', '删除成功', result.message || '用户账户已删除');
+        await loadUsers();
+        await loadDashboard();
+    } catch (error) {
+        showToast('error', '删除失败', error.error || '删除用户账户失败');
+    }
+}
+
+async function createNewUser() {
+    const nameInput = qs('#newUserName');
+    const handleInput = qs('#newUserHandle');
+    const passwordInput = qs('#newUserPassword');
+    const passwordConfirmInput = qs('#newUserPasswordConfirm');
+    const adminCheckbox = qs('#newUserAdmin');
+    const createBtn = qs('#createUserBtn');
+
+    const name = nameInput.value.trim();
+    const handle = handleInput.value.trim();
+    const password = passwordInput.value;
+    const passwordConfirm = passwordConfirmInput.value;
+    const isAdmin = adminCheckbox.checked;
+
+    // 验证输入
+    if (!name || !handle) {
+        showToast('error', '输入错误', '用户名和Handle不能为空');
+        return;
+    }
+
+    // 验证密码
+    if (password || passwordConfirm) {
+        if (password !== passwordConfirm) {
+            showToast('error', '输入错误', '两次输入的密码不一致');
+            return;
+        }
+    }
+
+    try {
+        createBtn.disabled = true;
+
+        const result = await postJSON('/api/admin/users/create', {
+            name: name,
+            handle: handle,
+            password: password || undefined,
+            admin: isAdmin,
+        });
+
+        showToast('success', '创建成功', result.message || `用户 ${result.handle} 创建成功`);
+
+        // 清空表单
+        nameInput.value = '';
+        handleInput.value = '';
+        passwordInput.value = '';
+        passwordConfirmInput.value = '';
+        adminCheckbox.checked = false;
+
+        // 重新加载用户列表
+        await loadUsers();
+        await loadDashboard();
+    } catch (error) {
+        showToast('error', '创建失败', error.error || '创建用户失败');
+    } finally {
+        createBtn.disabled = false;
     }
 }
 
@@ -844,6 +948,13 @@ function setupNavigationHandlers() {
     if (registrationToggle) {
         registrationToggle.removeEventListener('change', handleRegistrationToggle);
         registrationToggle.addEventListener('change', handleRegistrationToggle);
+    }
+
+    // Create user button
+    const createUserBtn = qs('#createUserBtn');
+    if (createUserBtn) {
+        createUserBtn.removeEventListener('click', createNewUser);
+        createUserBtn.addEventListener('click', createNewUser);
     }
 }
 

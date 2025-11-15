@@ -5,9 +5,12 @@ import fs from 'node:fs';
 
 import express from 'express';
 import storage from 'node-persist';
+import lodash from 'lodash';
 import { sync as writeFileAtomicSync } from 'write-file-atomic';
 
-import { getUserDirectories, toKey, getPasswordHash } from '../users.js';
+import { getUserDirectories, toKey, getPasswordHash, getPasswordSalt, getAllUserHandles } from '../users.js';
+import { checkForNewContent } from './content-manager.js';
+import { DEFAULT_USER } from '../constants.js';
 
 // 从环境变量读取管理员凭据，避免硬编码
 const ADMIN_CREDENTIALS = {
@@ -633,5 +636,137 @@ router.delete('/invite-codes/:code', async (req, res) => {
     } catch (error) {
         console.error('Delete invite code error:', error);
         return res.status(500).json({ error: '删除邀请码失败' });
+    }
+});
+
+// ──────────────────────────────────────────────────────────────
+// 用户账户管理（创建和删除）
+// ──────────────────────────────────────────────────────────────
+
+// 创建新用户
+router.post('/users/create', async (req, res) => {
+    try {
+        const { name, handle, password, admin } = req.body;
+
+        if (!name || !handle) {
+            return res.status(400).json({ error: '用户名和handle不能为空' });
+        }
+
+        // 格式化handle
+        const finalHandle = lodash.kebabCase(String(handle).toLowerCase().trim());
+
+        if (!finalHandle) {
+            return res.status(400).json({ error: '无效的用户handle' });
+        }
+
+        // 检查handle是否已存在
+        const handles = await getAllUserHandles();
+        if (handles.some(x => x === finalHandle)) {
+            return res.status(409).json({ error: '该用户handle已存在' });
+        }
+
+        // 生成密码hash
+        const salt = getPasswordSalt();
+        const passwordHash = password ? getPasswordHash(password, salt) : '';
+
+        // 创建用户数据
+        const newUser = {
+            handle: finalHandle,
+            name: name.trim(),
+            created: Date.now(),
+            password: passwordHash,
+            salt: salt,
+            admin: !!admin,
+            enabled: true,
+        };
+
+        // 保存用户数据
+        await storage.setItem(toKey(finalHandle), newUser);
+
+        // 初始化账户数据
+        const accountData = {
+            points: 0,
+            accessOn: false,
+            lastCheckInDate: '',
+        };
+        await storage.setItem(toAccountKey(finalHandle), accountData);
+
+        // 创建用户目录结构（关键修复：确保所有子目录都被创建）
+        console.info('Creating data directories for', finalHandle);
+        const directories = getUserDirectories(finalHandle);
+
+        try {
+            // 显式创建所有子目录
+            for (const dir of Object.values(directories)) {
+                if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir, { recursive: true });
+                }
+            }
+        } catch (err) {
+            console.error('Failed to create directories for new user', finalHandle, err?.message || err);
+            // 回滚用户创建
+            await storage.removeItem(toKey(finalHandle));
+            await storage.removeItem(toAccountKey(finalHandle));
+            return res.status(500).json({ error: '创建用户目录失败' });
+        }
+
+        // 写入默认内容
+        try {
+            await checkForNewContent([directories]);
+        } catch (err) {
+            console.warn('Failed to seed default content for new user', finalHandle, err?.message || err);
+            // 不回滚，只是警告
+        }
+
+        return res.json({
+            success: true,
+            handle: finalHandle,
+            message: `用户 ${finalHandle} 创建成功`,
+        });
+    } catch (error) {
+        console.error('Create user error:', error);
+        return res.status(500).json({ error: '创建用户失败' });
+    }
+});
+
+// 删除用户账户
+router.delete('/users/:handle', async (req, res) => {
+    try {
+        const { handle } = req.params;
+        const { purgeData } = req.query; // 查询参数：是否删除用户数据
+
+        // 检查用户是否存在
+        const userKey = toKey(handle);
+        const userData = await storage.getItem(userKey);
+
+        if (!userData) {
+            return res.status(404).json({ error: '用户不存在' });
+        }
+
+        // 防止删除默认用户
+        if (handle === DEFAULT_USER.handle) {
+            return res.status(400).json({ error: '无法删除默认用户' });
+        }
+
+        // 删除用户数据（从storage中删除）
+        await storage.removeItem(userKey);
+        await storage.removeItem(toAccountKey(handle));
+
+        // 如果指定了purgeData，则同时删除用户文件夹
+        if (purgeData === 'true') {
+            const directories = getUserDirectories(handle);
+            if (fs.existsSync(directories.root)) {
+                console.info('Deleting data directories for', handle);
+                await fsPromises.rm(directories.root, { recursive: true, force: true });
+            }
+        }
+
+        return res.json({
+            success: true,
+            message: `用户 ${handle} 已删除${purgeData === 'true' ? '（包括所有数据）' : '（数据已保留）'}`,
+        });
+    } catch (error) {
+        console.error('Delete user account error:', error);
+        return res.status(500).json({ error: '删除用户账户失败' });
     }
 });
