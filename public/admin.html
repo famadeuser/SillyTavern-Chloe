@@ -218,10 +218,100 @@
 
             <!-- Page: Users -->
             <div class="page" id="page-users">
+                <!-- Create User Card -->
+                <div class="pixel-card">
+                    <div class="card-header">
+                        <span class="card-icon">+</span>
+                        <span class="card-title">创建新用户</span>
+                        <div class="scanline"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="create-redeem-section">
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label for="newUserName" class="input-label">
+                                        <span class="label-icon">▸</span>
+                                        <span>显示名称</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="newUserName"
+                                        class="pixel-input"
+                                        placeholder="请输入用户显示名称"
+                                        required
+                                    >
+                                </div>
+                                <div class="input-group">
+                                    <label for="newUserHandle" class="input-label">
+                                        <span class="label-icon">▸</span>
+                                        <span>用户Handle</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="newUserHandle"
+                                        class="pixel-input"
+                                        placeholder="小写字母、数字和横线"
+                                        pattern="[a-z0-9-]+"
+                                        required
+                                    >
+                                </div>
+                                <div class="input-group">
+                                    <label for="newUserPassword" class="input-label">
+                                        <span class="label-icon">▸</span>
+                                        <span>密码（可选）</span>
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="newUserPassword"
+                                        class="pixel-input"
+                                        placeholder="留空表示无密码"
+                                        autocomplete="new-password"
+                                    >
+                                </div>
+                                <div class="input-group">
+                                    <label for="newUserPasswordConfirm" class="input-label">
+                                        <span class="label-icon">▸</span>
+                                        <span>确认密码</span>
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="newUserPasswordConfirm"
+                                        class="pixel-input"
+                                        placeholder="再次输入密码"
+                                        autocomplete="new-password"
+                                    >
+                                </div>
+                            </div>
+                            <div class="setting-item" style="margin-top: 1rem;">
+                                <div class="setting-info">
+                                    <div class="setting-label">
+                                        <span class="label-icon">▸</span>
+                                        <span>管理员权限</span>
+                                    </div>
+                                    <div class="setting-description">授予该用户管理员权限</div>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="newUserAdmin">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button id="createUserBtn" class="pixel-button action-btn large">
+                                <span class="button-content">
+                                    <span class="button-icon">+</span>
+                                    <span class="button-text">创建用户</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users List Card -->
                 <div class="pixel-card">
                     <div class="card-header">
                         <span class="card-icon">👤</span>
-                        <span class="card-title">用户管理</span>
+                        <span class="card-title">用户列表</span>
                         <div class="scanline"></div>
                     </div>
                     <div class="card-body">

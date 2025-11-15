@@ -58,7 +58,7 @@
 
 .setting-label {
     font-family: var(--pixel-font-alt);
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     color: var(--pixel-black);
     margin-bottom: 8px;
@@ -73,7 +73,7 @@
 
 .setting-description {
     font-family: var(--pixel-font-alt);
-    font-size: 11px;
+    font-size: 15px;
     color: var(--pixel-dark-gray);
     line-height: 1.5;
 }
@@ -167,7 +167,7 @@
     background: var(--pixel-white);
     border: 2px solid var(--pixel-dark-gray);
     font-family: var(--pixel-font-alt);
-    font-size: 12px;
+    font-size: 16px;
     color: var(--pixel-dark-gray);
     text-align: center;
 }
@@ -212,7 +212,7 @@
 
 .table-header .table-cell {
     font-family: var(--pixel-font);
-    font-size: 9px;
+    font-size: 14px;
     letter-spacing: 1px;
     color: var(--pixel-white);
     font-weight: bold;
@@ -243,7 +243,7 @@
 
 .table-cell {
     font-family: var(--pixel-font-alt);
-    font-size: 11px;
+    font-size: 16px;
     color: var(--pixel-black);
     display: flex;
     align-items: center;
@@ -258,11 +258,11 @@
 
 .user-name {
     font-weight: bold;
-    font-size: 12px;
+    font-size: 18px;
 }
 
 .user-handle {
-    font-size: 10px;
+    font-size: 15px;
     color: var(--pixel-dark-gray);
 }
 
@@ -271,7 +271,7 @@
     align-items: center;
     padding: 4px 8px;
     font-family: var(--pixel-font);
-    font-size: 8px;
+    font-size: 12px;
     border: 2px solid var(--pixel-black);
     background: var(--pixel-white);
 }
@@ -314,7 +314,7 @@
 
 .action-btn-small {
     padding: 4px 8px;
-    font-size: 8px;
+    font-size: 13px;
     box-shadow: 2px 2px 0 var(--pixel-black);
     white-space: nowrap;
 }
@@ -336,12 +336,12 @@
 
 .code-text {
     font-family: var(--pixel-font);
-    font-size: 10px;
+    font-size: 15px;
     letter-spacing: 1px;
 }
 
 .date-text {
-    font-size: 10px;
+    font-size: 15px;
     color: var(--pixel-dark-gray);
 }
 
@@ -388,7 +388,7 @@
     border: 3px solid var(--pixel-black);
     box-shadow: 4px 4px 0 var(--pixel-black);
     font-family: var(--pixel-font-alt);
-    font-size: 11px;
+    font-size: 16px;
     color: var(--pixel-black);
     text-decoration: none;
     transition: all 0.2s ease;
@@ -449,15 +449,15 @@
     }
 
     .table-cell {
-        font-size: 10px;
+        font-size: 15px;
     }
 
     .user-name {
-        font-size: 11px;
+        font-size: 17px;
     }
 
     .user-handle {
-        font-size: 9px;
+        font-size: 14px;
     }
 }
 
@@ -502,7 +502,7 @@
     .table-cell::before {
         content: attr(data-label);
         font-family: var(--pixel-font);
-        font-size: 8px;
+        font-size: 13px;
         color: var(--pixel-dark-gray);
         margin-right: 8px;
     }
