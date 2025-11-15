@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import fs from 'node:fs';
 
 import storage from 'node-persist';
 import express from 'express';
@@ -145,6 +146,20 @@ router.post('/register', async (request, response) => {
 
         // 初始化目录并写入默认内容
         const dirs = getUserDirectories(finalHandle);
+
+        // 创建所有用户子目录（修复：确保所有目录都存在）
+        try {
+            for (const dir of Object.values(dirs)) {
+                if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir, { recursive: true });
+                }
+            }
+        } catch (err) {
+            console.error('Failed to create directories for newly registered user', finalHandle, err?.message || err);
+            return response.status(500).json({ error: '创建用户目录失败，请稍后重试' });
+        }
+
+        // 写入默认内容
         try {
             await checkForNewContent([dirs]);
         } catch (err) {
